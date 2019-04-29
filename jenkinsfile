@@ -1,63 +1,36 @@
-node{
+node {
+    def app
 
-  //Define all variables
-  def project = 'cicd'
-  def appName = 'my-first-micros'
-  def serviceName = "${appName}-backend"  
-  def imageVersion = 'development'
-  def namespace = 'dev'
-  def imageTag = "satishsverma/${project}${appName}:${imageVersion}.${env.BUILD_NUMBER}"
-  
-  //Checkout Code from Git
-  git clone https://github.com/satishsverma/cicd.git
-  // git checkout dev
-  
-  //Stage 1 : Build the docker image.
-  stage('Build image') {
-      sh("docker build -t ${imageTag} .")
-  }
-  
-  //Stage 2 : Push the image to docker registry
-  stage('Push image to registry') {
-      sh("docker -- push ${imageTag}")
-  }
-  
-  //Stage 3 : Deploy Application
-  stage('Deploy Application') {
-       switch (namespace) {
-              //Roll out to Dev Environment
-              case "development":
-                   // Create namespace if it doesn't exist
-                   sh("kubectl get ns ${namespace} || kubectl create ns ${namespace}")
-           //Update the imagetag to the latest version
-                   sh("sed -i.bak 's#satishsverma/${project}${appName}:${imageVersion}#${imageTag}#' ./k8s/deployment.yaml")
-                   //Create or update resources
-           sh("kubectl --namespace=${namespace} apply -f k8s/deployment.yaml")
-                   //sh("kubectl --namespace=${namespace} apply -f k8s/development/service.yaml")
-           //Grab the external Ip address of the service
-                   //sh("echo http://`kubectl --namespace=${namespace} get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
-                   break
-           
-        //Roll out to Dev Environment
-              case "production":
-                   // Create namespace if it doesn't exist
-                   sh("kubectl get ns ${namespace} || kubectl create ns ${namespace}")
-           //Update the imagetag to the latest version
-                   sh("sed -i.bak 's#gcr.io/${project}/${appName}:${imageVersion}#${imageTag}#' ./k8s/production/*.yaml")
-           //Create or update resources
-                   sh("kubectl --namespace=${namespace} apply -f k8s/production/deployment.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/production/service.yaml")
-           //Grab the external Ip address of the service
-                   sh("echo http://`kubectl --namespace=${namespace} get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
-                   break
-       
-              default:
-                   sh("kubectl get ns ${namespace} || kubectl create ns ${namespace}")
-                   sh("sed -i.bak 's#gcr.io/${project}/${appName}:${imageVersion}#${imageTag}#' ./k8s/development/*.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/development/deployment.yaml")
-                   sh("kubectl --namespace=${namespace} apply -f k8s/development/service.yaml")
-                   sh("echo http://`kubectl --namespace=${namespace} get service/${feSvcName} --output=json | jq -r '.status.loadBalancer.ingress[0].ip'` > ${feSvcName}")
-                   break
-  }
+    stage('Clone repository') {
+        /* Let's make sure we have the repository cloned to our workspace */
 
+        checkout scm
+    }
+
+    stage('Build image') {
+        /* This builds the actual image; synonymous to
+         * docker build on the command line */
+
+        app = docker.build("47billion/hellonode")
+    }
+
+    stage('Test image') {
+        /* Ideally, we would run a test framework against our image.
+         * For this example, we're using a Volkswagen-type approach ;-) */
+
+        app.inside {
+            sh 'echo "Tests passed"'
+        }
+    }
+
+    stage('Push image') {
+        /* Finally, we'll push the image with two tags:
+         * First, the incremental build number from Jenkins
+         * Second, the 'latest' tag.
+         * Pushing multiple tags is cheap, as all the layers are reused. */
+        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+            app.push("${env.BUILD_NUMBER}")
+            app.push("latest")
+        }
+    }
 }
