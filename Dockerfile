@@ -1,1 +1,5 @@
-FROM ubuntu:16.04
+FROM alpine:3.4
+
+RUN touch /satish.txt
+
+CMD ["tail", "-f", "/satish.txt"]
