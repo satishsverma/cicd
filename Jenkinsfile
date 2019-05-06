@@ -5,7 +5,7 @@ node {
         /* Let's make sure we have the repository cloned to our workspace */
 
         checkout scm
-        checkout([$class: 'GitSCM', branches: [[name: '*/{env.namespace}']]])
+        sh "git checkout $namespace"
     }
 
     stage('Build image') {
