@@ -2,7 +2,7 @@ node {
     def app
 
     Git_Branch="${Git_Branch_Name}"
-    AppName = "47billion/hellonode"
+    appName = "47billion/hellonode"
     ImageName = "${appName}:${Git_Branch}-${env.BUILD_NUMBER}"
     env.BUILDIMG="${ImageName}"
     
