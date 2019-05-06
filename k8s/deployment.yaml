@@ -2,7 +2,6 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: recruitment-service-deployment
-  namespace: dev
   labels:
     app: recruitment-service-app
 spec:
@@ -14,7 +13,7 @@ spec:
     spec:
       containers:
       - name: recruitment-service
-        image: gcr.io/bats-qa/recruitment-service:development
+        image: 47billion/hellonode:__BUILD_TAG__
         ports:
         - containerPort: 8081
 
