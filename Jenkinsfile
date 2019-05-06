@@ -3,7 +3,8 @@ node {
 
     Git_Branch="${Git_Branch_Name}"
     appName = "47billion/hellonode"
-    ImageName = "${appName}:${Git_Branch}-${env.BUILD_NUMBER}"
+    IMAGETAG="${Image_Tag}"
+    ImageName = "${appName}:${Git_Branch}-${IMAGETAG}"
     env.BUILDIMG="${ImageName}"
     
     stage('Clone repository') {
@@ -35,12 +36,12 @@ node {
          * Second, the 'latest' tag.
          * Pushing multiple tags is cheap, as all the layers are reused. */
         docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${env.BUILDIMG}")
+            app.push("${IMAGETAG}")
             // app.push("latest")
         }
     }
     
     stage ('Deploy Build') {
-        sh "sed 's#__BUILD_TAG__#'${env.BUILDIMG}'#' ./k8s/deployment.yaml | kubectl apply -n $namespace -f -"
+        sh "sed 's#__BUILD_TAG__#'${IMAGETAG}'#' ./k8s/deployment.yaml | kubectl apply -n $namespace -f -"
     }
 }
