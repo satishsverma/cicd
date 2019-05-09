@@ -1,11 +1,11 @@
 node {
-    def app
+    //def app
 
-    Git_Branch="${Git_Branch_Name}"
+    Git_Branch = "${Git_Branch_Name}"
     appName = "47billion/hellonode"
-    IMAGETAG="${Image_Tag}"
+    IMAGETAG = "${Image_Tag}"
     ImageName = "${appName}:${Git_Branch}-${IMAGETAG}"
-    env.BUILDIMG="${ImageName}"
+    env.BUILDIMG = "${ImageName}"
     
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -21,27 +21,18 @@ node {
         app = docker.build("${env.BUILDIMG}")
     }
 
-//    stage('Test image') {
-        /* Ideally, we would run a test framework against our image.
-         * For this example, we're using a Volkswagen-type approach ;-) */
-
-//        app.inside {
-//            sh 'echo "Tests passed"'
-//        }
-//    }
-
-//    stage('Push image') {
+    stage('Push image') {
         /* Finally, we'll push the image with two tags:
          * First, the incremental build number from Jenkins
          * Second, the 'latest' tag.
          * Pushing multiple tags is cheap, as all the layers are reused. */
-//        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-//            app.push("${IMAGETAG}")
+        docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+            app.push("${IMAGETAG}")
             // app.push("latest")
-//        }
-//    }
-    
-    stage ('Deploy Build') {
-        sh "sed 's#__BUILD_TAG__#'${IMAGETAG}'#' ./k8s/deployment.yaml | kubectl apply -n $namespace -f -"
+        }
     }
+    
+//    stage ('Deploy Build') {
+//        sh "sed 's#__BUILD_TAG__#'${IMAGETAG}'#' ./k8s/deployment.yaml | kubectl apply -n $namespace -f -"
+//    }
 }
