@@ -27,7 +27,7 @@ node {
          * Second, the 'latest' tag.
          * Pushing multiple tags is cheap, as all the layers are reused. */
         docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-            app.push("${IMAGETAG}")
+            app.push("${Git_Branch_Name}"-"${IMAGETAG}")
             // app.push("latest")
         }
     }
