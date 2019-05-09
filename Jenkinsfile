@@ -2,7 +2,7 @@ node {
     //def app
 
     Git_Branch = "${Git_Branch_Name}"
-    appName = "47billion/hellonode"
+    appName = "hycube/hellonode"
     IMAGETAG = "${Image_Tag}"
     ImageName = "${appName}:${Git_Branch}-${IMAGETAG}"
     env.BUILDIMG = "${ImageName}"
