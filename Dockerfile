@@ -1,5 +1,3 @@
-FROM alpine:3.4
+FROM nginx
 
-RUN touch /satish.txt
-
-CMD ["tail", "-f", "/satish.txt"]
+ENV satish=dev
