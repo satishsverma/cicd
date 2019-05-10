@@ -36,10 +36,16 @@ node {
 //        sh "sed 's#__BUILD_TAG__#'${IMAGETAG}'#' ./k8s/deployment.yaml | kubectl apply -n $namespace -f -"
 //    }
     
-    stage('Deploy Build') {
-       def deployApp = 'kubectl --namespace ${Git_Branch_Name} set image deployment.v1.apps/nginx-deployment nginx-test=${env.BUILDIMG}'	
-       sshagent(['master-ssh-credentials']) {
-         sh 'ssh -tt -o StrictHostKeyChecking=no billions@192.168.7.9 ${deployApp}'
-       }
-    }
+//    stage('Deploy Build') {
+//       def deployApp = 'kubectl --namespace ${Git_Branch_Name} set image deployment.v1.apps/nginx-deployment nginx-test=${env.BUILDIMG}'	
+//       sshagent(['master-ssh-credentials']) {
+//         sh 'ssh -tt -o StrictHostKeyChecking=no billions@192.168.7.9 ${deployApp}'
+//       }
+//    }
+    
+        stage('Deploy Build') {
+withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'docker-hub-credentials', namespace: '', serverUrl: 'https://192.168.7.9:6443') {
+    sh "kubectl get pods"
+}
+        }
 }
