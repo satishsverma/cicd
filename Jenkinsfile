@@ -49,15 +49,12 @@ node {
 //}
 //        }
 
-    def remote = [:]
-    remote.name = 'billions'
-    remote.host = '192.168.7.9'
-    remote.user = 'billions'
-    remote.password = 'axe345house2432ff'
-    remote.allowAnyHosts = true
-    stage('Remote SSH') {
-      sshCommand remote: remote, command: "ls -lrt"
-      // sshCommand remote: remote, command: "for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done"
+stage ('Deploy') {
+    steps{
+        sshagent(credentials : ['master-ssh-credentials']) {
+            sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 uptime'
+        }
     }
+}
 
 }
