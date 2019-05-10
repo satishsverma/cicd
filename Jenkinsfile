@@ -44,7 +44,7 @@ node {
 //    }
     
         stage('Deploy Build') {
-withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'docker-hub-credentials', namespace: '', serverUrl: 'https://192.168.7.9:6443') {
+withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kube_ctl_details', namespace: '', serverUrl: 'https://192.168.7.9:6443') {
     sh "kubectl get pods"
 }
         }
