@@ -52,7 +52,7 @@ node {
 stage ('Deploy') {
     steps{
         sshagent(credentials : ['master-ssh-credentials']) {
-            sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 uptime'
+            sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 ls'
         }
     }
 }
