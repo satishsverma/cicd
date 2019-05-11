@@ -1,11 +1,11 @@
-node {
+//node {
     //def app
 
-    Git_Branch = "${Git_Branch_Name}"
-    appName = "hycube/hellonode"
-    IMAGETAG = "${Image_Tag}"
-    ImageName = "${appName}:${Git_Branch}-${IMAGETAG}"
-    env.BUILDIMG = "${ImageName}"
+//    Git_Branch = "${Git_Branch_Name}"
+//    appName = "hycube/hellonode"
+//    IMAGETAG = "${Image_Tag}"
+//    ImageName = "${appName}:${Git_Branch}-${IMAGETAG}"
+//    env.BUILDIMG = "${ImageName}"
     
 //    stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -49,10 +49,33 @@ node {
 //}
 //        }
 
-stage ('Deploy') {
-        sshagent(credentials : ['master-ssh-credentials']) {
-            sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 ls'
+//stage ('Deploy') {
+//        sshagent(credentials : ['master-ssh-credentials']) {
+//            sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 ls'
+//        }
+//    }
+
+    
+    def remote = [:]
+remote.name = "master"
+remote.host = "192.168.7.9"
+remote.allowAnyHosts = true
+
+node {
+    withCredentials([usernamePassword(credentialsId: 'ssh-master-node', passwordVariable: 'password', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.password = password
+
+        stage("SSH Steps Rocks!") {
+            writeFile file: 'test.sh', text: 'ls'
+            sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+            sshScript remote: remote, script: 'test.sh'
+            sshPut remote: remote, from: 'test.sh', into: '.'
+            sshGet remote: remote, from: 'test.sh', into: 'test_new.sh', override: true
+            sshRemove remote: remote, path: 'test.sh'
         }
     }
+}
 
+    
 }
