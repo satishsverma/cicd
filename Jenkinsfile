@@ -58,5 +58,5 @@
 
 
 node {
-kubernetesDeploy configs: '/var/jenkins_home/.kube/config', kubeConfig: [path: ''], kubeconfigId: 'KUBE_CONFIG_ID', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']    
+kubernetesDeploy configs: '.kube/config', kubeConfig: [path: ''], kubeconfigId: 'KUBE_CONFIG_ID', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
 }
