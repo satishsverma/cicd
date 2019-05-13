@@ -55,8 +55,8 @@ stage ('Deploy') {
 //        }
 //    }
 
-sshagent(['Clive-SSH-key']) {
-   sh 'ssh -o StrictHostKeyChecking=no ubuntu@111.118.241.67 ls'
+sshagent(['master-ssh-login']) {
+    sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 ls'
 }
 }
 //node {
