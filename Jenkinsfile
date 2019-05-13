@@ -1,4 +1,4 @@
-//node {
+node {
     //def app
 
 //    Git_Branch = "${Git_Branch_Name}"
@@ -49,15 +49,17 @@
 //}
 //        }
 
-//stage ('Deploy') {
+stage ('Deploy') {
 //        sshagent(credentials : ['master-ssh-credentials']) {
 //            sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 ls'
 //        }
 //    }
 
-
-
-node {
-kubernetesDeploy configs: '.kube/config', kubeConfig: [path: ''], kubeconfigId: 'master-k8s-credentials', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
+sshagent(['Clive-SSH-key']) {
+   sh 'ssh -o StrictHostKeyChecking=no ubuntu@111.118.241.67 ls'
+}
+}
+//node {
+//kubernetesDeploy configs: '.kube/config', kubeConfig: [path: ''], kubeconfigId: 'master-k8s-credentials', secretName: '', ssh: [sshCredentialsId: '*', sshServer: ''], textCredentials: [certificateAuthorityData: '', clientCertificateData: '', clientKeyData: '', serverUrl: 'https://']
 
 }
