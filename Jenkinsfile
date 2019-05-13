@@ -28,7 +28,7 @@ node {
     
     stage('Deploy Build') {
        def deployApp = 'kubectl --namespace ${NAME_SPACE} set image deployment.v1.apps/nginx-deployment nginx-test=${env.BUILDIMG}'	
-       sshagent(['master-ssh-credentials']) {
+       sshagent(['master-ssh-login']) {
          sh 'ssh -tt -o StrictHostKeyChecking=no billions@192.168.7.9 ${deployApp}'
        }
     }
