@@ -26,9 +26,9 @@ node {
     }
     
     stage('Deploy Build') {
-       def deployApp = 'kubectl --namespace ${NAME_SPACE} set image deployment.v1.apps/app-server app-server=${env.BUILDIMG}'	
+       def deployApp = "kubectl --namespace ${NAME_SPACE} set image deployment.v1.apps/app-server app-server=${env.BUILDIMG}"	
        sshagent(['master-ssh-login']) {
-         sh 'ssh -tt -o StrictHostKeyChecking=no billions@192.168.7.9 ${deployApp}'
+         sh "ssh -tt -o StrictHostKeyChecking=no billions@192.168.7.9 ${deployApp}"
        }
     }
 }
