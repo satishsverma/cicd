@@ -56,7 +56,7 @@ stage ('Deploy') {
 //    }
 
 sshagent(['master-ssh-login']) {
-    sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 ls'
+    sh 'ssh -o StrictHostKeyChecking=no billions@192.168.7.9 kubectl get po'
 }
 }
 //node {
